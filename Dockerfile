@@ -1,20 +1,18 @@
-# Fetching the latest node image on alpine linux
-FROM node:alpine AS development
+#
+# Build stage
+#
+FROM maven:3.6.0-jdk-11-slim AS build 
+WORKDIR /app
 
-# Declaring env
-ENV NODE_ENV development
-# Setting up the work directory
-WORKDIR /react-app
+COPY src src
+COPY pom.xml pom.xml
+RUN mvn -f pom.xml clean package
 
-# Installing dependencies
-COPY . .
-#COPY ./package.json /react-app
-RUN yarn install
-
-#npm install 
-
-# Copying all the files in our project
-
-EXPOSE 9000
-# Starting our application
-CMD yarn start
+#
+# Package stage
+#
+FROM openjdk:8-jdk-alpine
+ARG JAR_FILE
+COPY --from=build /app/target/*.jar /usr/local/lib/shipping.jar
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","/usr/local/lib/shipping.jar"]
