@@ -1,0 +1,29 @@
+{
+	"info": {
+		"_postman_id": "2ad3b1ef-2065-4da6-94f1-c3d32dfb0553",
+		"name": "shipping",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27150075"
+	},
+	"item": [
+		{
+			"name": "Ver estado de envío",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "shipping:8084/shipping/c",
+					"host": [
+						"shipping"
+					],
+					"port": "8084",
+					"path": [
+						"shipping",
+						"c"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
