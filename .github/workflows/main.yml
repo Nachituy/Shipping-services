@@ -100,7 +100,7 @@ jobs:
     
             
          
-    test:
+   test:
       needs: build
       runs-on: ubuntu-latest
       steps:
@@ -116,7 +116,7 @@ jobs:
             node-version: '16.x' 
             
         - name: Install Newman
-            run: | 
+          run: | 
               npm install -g newman
               npm install -g newman-reporter-htmlextra
           
