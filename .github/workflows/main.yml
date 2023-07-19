@@ -101,7 +101,7 @@ jobs:
             
          
    test:
-      needs: build
+      needs: deploy
       runs-on: ubuntu-latest
       steps:
         - name: Check out Git repositor
