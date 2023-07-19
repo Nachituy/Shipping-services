@@ -93,7 +93,11 @@ jobs:
         - name: Check Rolling Update
           run:  kubectl set image deployments/shipping shipping=$RELEASE_IMAGE
           env:
-            RELEASE_IMAGE: 201748105803.dkr.ecr.us-east-1.amazonaws.com/obligatorio:shipping_image
+            RELEASE_IMAGE: 201748105803.dkr.ecr.us-east-1.amazonaws.com/obligatorio:shipping_image 
+            
+        - name: Get Cluster Public IP
+          run: kubectl get services --all-namespaces -o wide
+    
             
          
     test:
