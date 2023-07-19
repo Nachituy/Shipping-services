@@ -16,9 +16,9 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DESA }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DESA }}
-        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN_DESA}}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN}}
         aws-region: us-east-1
         
     - name: Login to Amazon ECR
@@ -29,7 +29,7 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: obligatorio
-        IMAGE_TAG: orders_image
+        IMAGE_TAG: shipping_image
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
@@ -52,9 +52,9 @@ jobs:
         - name: Configure AWS credentials
           uses: aws-actions/configure-aws-credentials@v1
           with:
-            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DESA }}
-            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DESA }}
-            aws-session-token: ${{ secrets.AWS_SESSION_TOKEN_DESA}}
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
             aws-region: us-east-1
         
         - name: Login to Amazon ECR
@@ -82,18 +82,19 @@ jobs:
              echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
              sudo apt-get update
              sudo apt-get install -y kubectl
-             #kubectl run orders --image=$RELEASE_IMAGE --port=8080 --image-pull-policy Always -l app=orders 
              kubectl apply -f kubernetes/pod.yml  -f kubernetes/services.yml -f kubernetes/networking.yml  
           env:
              KUBE_CONFIG_DATA: $KUBE_CONFIG
              ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
              ECR_REPOSITORY: obligatorio
              IMAGE_TAG: orders_image
-             RELEASE_IMAGE: 612686574181.dkr.ecr.us-east-1.amazonaws.com/obligatorio:orders_image
+             RELEASE_IMAGE: 201748105803.dkr.ecr.us-east-1.amazonaws.com/obligatorio:shipping_image
         
-        #- name: Check Rolling Update
-        #  run: 
-         
+        - name: Check Rolling Update
+          run:  kubectl set image deployments/shipping shipping=$RELEASE_IMAGE
+          env:
+            RELEASE_IMAGE: 201748105803.dkr.ecr.us-east-1.amazonaws.com/obligatorio:shipping_image
+            
          
     test:
       needs: build
